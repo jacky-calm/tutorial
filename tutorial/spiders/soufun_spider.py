@@ -5,7 +5,7 @@ class DmozSpider(BaseSpider):
     name = "soufun"
     allowed_domains = ["soufun.com"]
     start_urls = [
-        "http://newhouse.sh.soufun.com/house/%C9%CF%BA%A3_________________1_.htm"
+        "http://newhouse.sh.soufun.com/house/web/Search_Result.php"
     ]
 
     def extract(self, select):
@@ -16,9 +16,10 @@ class DmozSpider(BaseSpider):
         out = open(filename, 'wb')
 
         hxs = HtmlXPathSelector(response)
-        sites = hxs.select('//ul/li[@class="s1"]')
+        sites = hxs.select('//div[@class="searchListNoraml"]')
         for site in sites:
-          name = self.extract(site.select('div/a/text()'))
-          house_type = self.extract(site.select('div[@class="dot6"]/text()'))
-          print name, house_type
-          out.write(" ".join((name, house_type)))
+          name = self.extract(site.select('div[@class="info"]/ul/li[@class="s1"]/div[@class="name"]/a/text()'))
+          house_type = self.extract(site.select('div[@class="info"]/ul/li[@class="s1"]/div[@class="dot6"]/text()'))
+          price = self.extract(site.select('div[@class="anther"]/div[@class="antherBox"]/div[@class="price"]/span[@class="price_type"]/text()'))
+          print name, house_type, price
+          out.write(" ".join((name, house_type, price)))
