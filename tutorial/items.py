@@ -5,10 +5,9 @@
 
 from scrapy.item import Item, Field
 
-class TutorialItem(Item):
+class HouseItem(Item):
     # define the fields for your item here like:
-    # name = Field()
     title = Field()
     link = Field()
-    desc = Field()
+    price = Field()
     pass
