@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+body, html,#container {width: 100%;height: 100%;overflow: hidden;margin:10;}
+#l-map{height:100%;width:78%;float:left;border-right:2px solid #bcbcbc;}
+#r-result{height:100%;width:20%;float:left;}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.4"></script>
+<title>百度地图的Hello, World</title>
+</head>
+<body>
+<div id="container"></div>
+</body>
+</html>
+<script type="text/javascript">
+ 
+var map = new BMap.Map("container");  
+map.centerAndZoom(new BMap.Point(116.404, 39.915), 11);  
+// 创建地址解析器实例  
+var myGeo = new BMap.Geocoder();  
+
+// 将地址解析结果显示在地图上，并调整地图视野  
+myGeo.getPoint("张江镇", function(point){  
+ if (point) {  
+   map.centerAndZoom(point, 16);  
+   map.addOverlay(new BMap.Marker(point));   
+ }  
+}, "上海市"); 
+
+function showInfo(target, name) {
+  var opts = {  
+   width : 250,     // 信息窗口宽度  
+   height: 100,     // 信息窗口高度  
+   title : "张江镇"  // 信息窗口标题  
+  }  
+  var infoWindow = new BMap.InfoWindow(name, opts);  // 创建信息窗口对象  
+  map.openInfoWindow(infoWindow, target);      // 打开信息窗口 
+
+}
+
+function addMarker(name) {
+  // 将地址解析结果显示在地图上，并调整地图视野  
+  myGeo.getPoint(name, function(point){  
+   if (point) { 
+     var marker = new BMap.Marker(point); 
+     map.addOverlay(marker);  
+     marker.addEventListener("click", function(){  
+       showInfo(point, name);
+     });   
+   }  
+  }, "张江镇"); 
+};
+
+addMarker("紫薇公园");
+addMarker("张江中学");
+addMarker("工商银行");
+addMarker("广兰幼儿园");
+addMarker("金科路");
+
+
+
+</script>
+
