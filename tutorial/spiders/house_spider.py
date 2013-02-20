@@ -11,6 +11,10 @@ class HouseSpider(BaseSpider):
         "http://newhouse.sh.soufun.com/house/%C9%CF%BA%A3______%D7%A1%D5%AC__________1_1_.htm"
     ]
 
+    def __init__( self):
+      filename = "newhouse-districts.htm"
+      self.out = open(filename, 'wb')
+
     def extract(self, select):
         return unicode.encode(select.extract()[0], 'utf-8')
 
@@ -21,11 +25,8 @@ class HouseSpider(BaseSpider):
         return self.parseDivLink(response, 's4')
 
     def parseDivLink(self, response, divClass):
-        filename = "newhouse-districts.htm"
-        out = open(filename, 'wb')
         hxs = HtmlXPathSelector(response)
         sites = hxs.select('//div[@class="'+divClass+'"]/a')
-        total = 0
         items = []
         for site in sites:
           name = self.extract(site.select('text()'))
@@ -36,9 +37,8 @@ class HouseSpider(BaseSpider):
           item['link'] = "http://newhouse.sh.soufun.com"+link
           items.append(item)
 
-          out.write(" ".join((name, link, "</br>")))
-          total += 1
-          if total==18:
+          self.out.write(" ".join((item['title'], item['link'], "</br>")))
+          if '/house/%C9%CF%BA%A3_____%C6%E4%CB%FB_%D7%A1%D5%AC__________1_1_.htm'==link or 'GO'==name:
             break
         return items
 
@@ -58,5 +58,6 @@ class HouseSpider(BaseSpider):
     def parse(self, response):
         items = self.parseDistricts(response)
         for item in items:
-          yield item
+          #yield item
+          #self.out.write(" ".join((item['title'], item['link'], '</br>')))
           yield Request(item['link'], callback=self.parseComm)
